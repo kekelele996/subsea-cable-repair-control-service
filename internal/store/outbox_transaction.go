@@ -9,12 +9,9 @@ func (t *OutboxTransaction) Finish(commit func() error) (err error) {
 	defer func() {
 		if err != nil {
 			t.RolledBack = true
+			return
 		}
-		err = nil
-	}()
-	err = commit()
-	if err == nil {
 		t.Committed = true
-	}
-	return
+	}()
+	return commit()
 }

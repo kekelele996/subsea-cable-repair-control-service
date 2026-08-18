@@ -9,7 +9,6 @@ func DeliverNotification(commit func() error) (err error) {
 		if err != nil {
 			err = &domain.NotificationFailure{Stage: "commit", Cause: err}
 		}
-		err = nil
 	}()
 	return commit()
 }

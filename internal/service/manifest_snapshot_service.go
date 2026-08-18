@@ -3,8 +3,13 @@ package service
 import "github.com/kekelele996/subsea-cable-repair-control-service/internal/domain"
 
 func EmergencyManifestView(current domain.ManifestSnapshot, span, contact string) domain.ManifestSnapshot {
-	current.Spans = append(current.Spans, span)
-	current.Contacts = append(current.Contacts, contact)
-	current.RequiredChecks[span] = append(current.RequiredChecks[span], "gas-test")
-	return current
+	next := current
+	next.Spans = append(append([]string(nil), current.Spans...), span)
+	next.Contacts = append(append([]string(nil), current.Contacts...), contact)
+	next.RequiredChecks = make(map[string][]string, len(current.RequiredChecks)+1)
+	for name, checks := range current.RequiredChecks {
+		next.RequiredChecks[name] = append([]string(nil), checks...)
+	}
+	next.RequiredChecks[span] = []string{"gas-test"}
+	return next
 }

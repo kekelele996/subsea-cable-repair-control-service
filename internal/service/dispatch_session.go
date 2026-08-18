@@ -3,24 +3,22 @@ package service
 import "context"
 
 func RunMobilizeSession(ctx context.Context, spans []string) []string {
-	child, cancel := context.WithCancel(ctx)
 	results := make(chan string, len(spans))
 	for _, span := range spans {
 		span := span
 		go func() {
 			select {
 			case results <- span:
-			case <-child.Done():
+			case <-ctx.Done():
 			}
 		}()
 	}
-	cancel()
-	out := []string{}
-	for i := 0; i < len(spans); i++ {
+	out := make([]string, 0, len(spans))
+	for len(out) < len(spans) {
 		select {
 		case span := <-results:
 			out = append(out, span)
-		default:
+		case <-ctx.Done():
 			return out
 		}
 	}

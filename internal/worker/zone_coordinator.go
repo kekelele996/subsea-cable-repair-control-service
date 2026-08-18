@@ -13,10 +13,14 @@ func CoordinateSpans(ctx context.Context, spans []string) []string {
 			}
 		}()
 	}
-	select {
-	case first := <-results:
-		return []string{first}
-	case <-ctx.Done():
-		return nil
+	out := make([]string, 0, len(spans))
+	for len(out) < len(spans) {
+		select {
+		case span := <-results:
+			out = append(out, span)
+		case <-ctx.Done():
+			return out
+		}
 	}
+	return out
 }

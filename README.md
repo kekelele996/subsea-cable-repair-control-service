@@ -1,5 +1,3 @@
 # Subsea Cable Repair Control Service
 
-Coordinates repair plans, vessel mobilization, span safety checks, permits, completion decisions and operational handovers for subsea telecom cable maintenance.
-
-Run: `go run ./cmd/cable-repair`
+Controls repair planning, vessel mobilization, span safety, permits and completion handovers for subsea cable maintenance.

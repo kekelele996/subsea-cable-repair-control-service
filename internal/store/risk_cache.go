@@ -5,4 +5,4 @@ import "github.com/kekelele996/subsea-cable-repair-control-service/internal/doma
 type RiskCache struct{ hazards []domain.Hazard }
 
 func (c *RiskCache) Put(hazards []domain.Hazard) { c.hazards = append(c.hazards[:0], hazards...) }
-func (c *RiskCache) Read() []domain.Hazard       { return c.hazards }
+func (c *RiskCache) Read() []domain.Hazard       { return domain.CloneHazards(c.hazards) }

@@ -9,6 +9,15 @@ func CloneStrings(values []string) []string {
 	return out
 }
 
+func CloneHazards(values []Hazard) []Hazard {
+	if values == nil {
+		return nil
+	}
+	out := make([]Hazard, len(values))
+	copy(out, values)
+	return out
+}
+
 func ClonePlan(in RepairPlan) RepairPlan {
 	in.Spans = CloneStrings(in.Spans)
 	return in

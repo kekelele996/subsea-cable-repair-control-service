@@ -1,0 +1,1 @@
+const view=document.querySelector('#plans'); function render(plan){const row=document.createElement('article');row.textContent=`${plan.id} / ${plan.cable}`;view.append(row)} fetch('/plans').catch(()=>{});

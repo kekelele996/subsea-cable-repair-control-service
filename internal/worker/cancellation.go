@@ -1,0 +1,16 @@
+package worker
+
+import (
+	"context"
+	"github.com/kekelele996/subsea-cable-repair-control-service/internal/service"
+	"time"
+)
+
+func CancelAwareMutation(ctx context.Context, s *service.System, id string) error {
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-time.After(time.Millisecond):
+	}
+	return s.ApplyCancellation(ctx, id)
+}

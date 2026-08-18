@@ -18,11 +18,11 @@ func NewManifestSnapshotStore() *ManifestSnapshotStore {
 func (s *ManifestSnapshotStore) Save(snapshot domain.ManifestSnapshot) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.items[snapshot.PlanID] = snapshot
+	s.items[snapshot.PlanID] = domain.CopyManifestSnapshot(snapshot)
 }
 
 func (s *ManifestSnapshotStore) Load(planID string) domain.ManifestSnapshot {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	return s.items[planID]
+	return domain.CopyManifestSnapshot(s.items[planID])
 }

@@ -8,5 +8,14 @@ type ManifestSnapshot struct {
 }
 
 func CopyManifestSnapshot(in ManifestSnapshot) ManifestSnapshot {
-	return in
+	out := in
+	out.Spans = CloneStrings(in.Spans)
+	out.Contacts = CloneStrings(in.Contacts)
+	if in.RequiredChecks != nil {
+		out.RequiredChecks = make(map[string][]string, len(in.RequiredChecks))
+		for k, v := range in.RequiredChecks {
+			out.RequiredChecks[k] = CloneStrings(v)
+		}
+	}
+	return out
 }

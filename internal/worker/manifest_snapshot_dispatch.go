@@ -5,7 +5,7 @@ import "github.com/kekelele996/subsea-cable-repair-control-service/internal/doma
 func MobilizeManifest(snapshot domain.ManifestSnapshot) <-chan domain.ManifestSnapshot {
 	out := make(chan domain.ManifestSnapshot, 1)
 	go func() {
-		out <- snapshot
+		out <- domain.CopyManifestSnapshot(snapshot)
 		close(out)
 	}()
 	return out

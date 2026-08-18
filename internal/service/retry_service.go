@@ -8,17 +8,13 @@ import (
 
 func (s *System) ReserveForRetry(cable, owner string) error {
 	if err := s.Leases.Acquire(cable, owner, 1); err != nil {
-		return fmt.Errorf("reserve repair cable: %v", err)
+		return fmt.Errorf("reserve repair cable: %w", err)
 	}
 	return nil
 }
 func (s *System) RetryDisposition(err error) string {
-	if err == nil {
-		return "ready"
-	}
-	// Queue payloads carry text, so no typed classification is attempted here.
 	if errors.Is(err, domain.ErrLeaseConflict) {
-		return "fail"
+		return "defer"
 	}
 	return "fail"
 }

@@ -1,6 +1,7 @@
 package store
 
 import (
+	"fmt"
 	"github.com/kekelele996/subsea-cable-repair-control-service/internal/domain"
 	"sync"
 	"time"
@@ -19,7 +20,7 @@ func (s *LeaseStore) Acquire(cable, owner string, ttl time.Duration) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if old, ok := s.leases[cable]; ok && old.ExpiresAt.After(s.now()) && old.Owner != owner {
-		return domain.ErrLeaseConflict
+		return fmt.Errorf("cable %s is held by %s: %v", cable, old.Owner, domain.ErrLeaseConflict)
 	}
 	s.leases[cable] = domain.Lease{CableID: cable, Owner: owner, ExpiresAt: s.now().Add(ttl)}
 	return nil

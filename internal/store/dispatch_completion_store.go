@@ -20,7 +20,9 @@ func (s *MobilizeCompletionStore) Acknowledge(span string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.acked[span] = true
-	s.once.Do(func() { close(s.done) })
+	if len(s.acked) == s.expected {
+		s.once.Do(func() { close(s.done) })
+	}
 }
 func (s *MobilizeCompletionStore) Wait(ctx context.Context) error {
 	select {

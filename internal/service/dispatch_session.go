@@ -1,28 +1,30 @@
 package service
 
-import "context"
+import (
+	"context"
+	"sync"
+)
 
 func RunMobilizeSession(ctx context.Context, spans []string) []string {
 	child, cancel := context.WithCancel(ctx)
+	defer cancel()
 	results := make(chan string, len(spans))
+	var workers sync.WaitGroup
+	workers.Add(len(spans))
 	for _, span := range spans {
 		span := span
 		go func() {
+			defer workers.Done()
 			select {
 			case results <- span:
 			case <-child.Done():
 			}
 		}()
 	}
-	cancel()
-	out := []string{}
-	for i := 0; i < len(spans); i++ {
-		select {
-		case span := <-results:
-			out = append(out, span)
-		default:
-			return out
-		}
+	go func() { workers.Wait(); close(results) }()
+	out := make([]string, 0, len(spans))
+	for span := range results {
+		out = append(out, span)
 	}
 	return out
 }
